@@ -31,4 +31,4 @@
     - name: Memory Red
       ansible.builtin.debug:
         msg: Memory Red
-       when: used_mem|int < 70
+      when: used_mem|int < 70
