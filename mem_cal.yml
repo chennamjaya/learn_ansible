@@ -2,7 +2,7 @@
   hosts: localhost
   tasks: 
     - name: Get Memory
-      anisble.builtin.shell: free | grep Mem | xargs 
+      ansible.builtin.shell: free | grep Mem | xargs 
       register: free
 #Here we are using shell commands to get the free memory and using grep Mem to get only the Mem line.xargs is used to remove extra spaces in the output. Register is a variable that stores the output of the task
     - name: Set a fact
