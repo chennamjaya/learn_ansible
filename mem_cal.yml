@@ -1,0 +1,34 @@
+- name: Print Used Memory
+  hosts: localhost
+  tasks: 
+    - name: Get Memory
+      anisble.builtin.shell: free | grep Mem | xargs 
+      register: free
+#Here we are using shell commands to get the free memory and using grep Mem to get only the Mem line.xargs is used to remove extra spaces in the output. Register is a variable that stores the output of the task
+    - name: Set a fact
+      ansible.builtin.set_fact:
+        FREE: "{{ free.stdout | split(' ') }}" 
+#stdout is used to generate only line output which we need instead of giving all the meta data in the register. Split is used to split the output as a list
+    - name: Set a fact
+      ansible.builtin.set_fact:
+        used_mem: "{{ FREE[3]|int / FREE[1]|int * 100 }}"
+   
+    - name: Print free output
+      ansible.builtin.debug: 
+        msg: "{{ used_mem }}"
+
+#as we are performing a mathematical comparison but ansible recognises it as a string so we are converting it to integer by using pipe symbol and int
+    - name: Memory Good
+      ansible.builtin.debug:
+        msg: Memory Good
+      when: used_mem|int < 50
+
+    - name: Memory Orange
+      ansible.builtin.debug:
+        msg: Memory Orange
+      when: used_mem|int > 50 and used_mem|int < 70
+
+    - name: Memory Red
+      ansible.builtin.debug:
+        msg: Memory Red
+       when: used_mem|int < 70
